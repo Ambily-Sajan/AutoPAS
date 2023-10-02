@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoPAS", "AutoPAS.csproj", "{D7E3DA79-9601-480B-9872-147ED778FAB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoPasTrainingTest", "..\AutoPasTrainingTest\AutoPasTrainingTest.csproj", "{C10766B3-08D9-426F-9F7A-17C156D44232}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7E3DA79-9601-480B-9872-147ED778FAB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7E3DA79-9601-480B-9872-147ED778FAB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7E3DA79-9601-480B-9872-147ED778FAB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7E3DA79-9601-480B-9872-147ED778FAB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10766B3-08D9-426F-9F7A-17C156D44232}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10766B3-08D9-426F-9F7A-17C156D44232}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10766B3-08D9-426F-9F7A-17C156D44232}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10766B3-08D9-426F-9F7A-17C156D44232}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8D743119-EE0A-4E92-A258-1FE26E4376D5}
+	EndGlobalSection
+EndGlobal
