@@ -16,12 +16,6 @@ namespace AutoPAS.Services
             this.autoPasDbContext = autoPasDbContext;
         }
 
-        /*public async Task<object> get()
-        {
-            var result = await userDbContext.portaluser.ToListAsync();
-            return result;
-        }*/
-
         public async Task<portaluser> validateUserLogin(portaluser portaluser)
         {
             var result = await userDbContext.portaluser.FirstOrDefaultAsync(u => u.username == portaluser.username && u.password == portaluser.password);
@@ -31,26 +25,27 @@ namespace AutoPAS.Services
             }
             return null;
         }
-        public async Task<Policy> validatePolicy(int policyNumber)
+        
+        public async Task<bool> ValidatePolicy(int policyNumber)
         {
             var policy = await autoPasDbContext.Policies.FirstOrDefaultAsync(p => p.PolicyNumber == policyNumber);
             if (policy != null)
             {
-                return policy;
+                return true;
             }
-            return null;
+            return false;
         }
-        public async Task<Vehicle> validateChasis(string vehicleId, string chasisNumber)
+        
+        public async Task<bool> ValidateChasis(string chasisnumber)
         {
-            var vehicle = await autoPasDbContext.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == vehicleId && v.ChasisNumber == chasisNumber);
-            if (vehicle != null)
+            var record = await autoPasDbContext.Vehicles.FirstOrDefaultAsync(v => v.ChasisNumber == chasisnumber);
+            if (record != null)
             {
-                return vehicle;
+                return true;
             }
-            return null;
-
-
+            return false;
         }
+
         public async Task<Policyvehicle> GetPolicyVehicle(int policynumber)
         {
             var policy = await autoPasDbContext.Policies.FirstOrDefaultAsync(p => p.PolicyNumber == policynumber);
@@ -61,18 +56,29 @@ namespace AutoPAS.Services
             }
             return null;
         }
-        public async Task<userpolicylist> AddPolicyNumber(int userid, int policynumber)
+        
+        public async Task<bool> AddPolicyNumber(UserPolicyListDTO userPolicyListDTO)
         {
-            userpolicylist userpolicylist = new userpolicylist
-            {
-               
-                userid = userid,
-                policynumber = policynumber
-            };
+            var exist = await userDbContext.userpolicylist.FirstOrDefaultAsync(u => u.policynumber == userPolicyListDTO.policynumber && u.userid == userPolicyListDTO.userid);
 
-            await userDbContext.userpolicylist.AddAsync(userpolicylist);
-            await userDbContext.SaveChangesAsync();
-            return userpolicylist;
+            if (exist != null)
+            {
+                return false;
+            }
+            else
+            {
+                var result = new userpolicylist
+                {
+
+                    userid = userPolicyListDTO.userid,
+                    policynumber = userPolicyListDTO.policynumber
+
+                };
+                await userDbContext.userpolicylist.AddAsync(result);
+                await userDbContext.SaveChangesAsync();
+                return true;
+            }
+
         }
 
         public async Task<List<userpolicylist>> GetUserPolicyNumber(int userid)
@@ -89,17 +95,18 @@ namespace AutoPAS.Services
 
                 if (policy == null)
                 {
-                    return null; // Policy not found for the given policy number
+                    return null; 
                 }
 
                 var policyVehicle = await autoPasDbContext.Policyvehicles.FirstOrDefaultAsync(v => v.PolicyId == policy.PolicyId);
 
                 if (policyVehicle == null)
                 {
-                    return null; // Policy vehicle not found for the given policy
+                    return null; 
                 }
 
-                var vehicleDetails = await autoPasDbContext.Vehicles
+ 
+            var vehicleDetails = await autoPasDbContext.Vehicles
                     .Where(v => v.VehicleId == policyVehicle.VehicleId)
                     .Select(v => new VehicleDetailsDTO
                     {
@@ -127,15 +134,22 @@ namespace AutoPAS.Services
                     })
                     .FirstOrDefaultAsync();
 
-                return vehicleDetails;
+            return vehicleDetails;
             
         }
-        public async Task<string> DeletePolicy(int policynumber)
+       
+        public async Task<bool> DeletePolicy(UserPolicyListDTO userPolicyListDTO)
         {
-            var userPolicy = await userDbContext.userpolicylist.FirstOrDefaultAsync(p => p.policynumber == policynumber);
-            userDbContext.userpolicylist.Remove(userPolicy);
+            var record = await userDbContext.userpolicylist.FirstOrDefaultAsync(u => u.policynumber == userPolicyListDTO.policynumber && u.userid == userPolicyListDTO.userid);
+            if (record == null)
+            {
+                return false;
+            }
+            userDbContext.userpolicylist.Remove(record);
             await userDbContext.SaveChangesAsync();
-            return "Deleted";
+            return true;
         }
+
+       
     }
 }

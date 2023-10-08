@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoPAS", "AutoPAS.csproj", "{D7E3DA79-9601-480B-9872-147ED778FAB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoPAS", "AutoPAS.csproj", "{D7E3DA79-9601-480B-9872-147ED778FAB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoPasTrainingTest", "..\AutoPasTrainingTest\AutoPasTrainingTest.csproj", "{C10766B3-08D9-426F-9F7A-17C156D44232}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoPasTrainingTest", "..\AutoPasTrainingTest\AutoPasTrainingTest.csproj", "{C10766B3-08D9-426F-9F7A-17C156D44232}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B6F41CA-2B9C-4A04-ABA6-A988A750196E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

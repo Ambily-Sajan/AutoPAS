@@ -44,7 +44,7 @@ namespace AutoPasTrainingTest.Controller
         }
 
         [Fact]
-        public async Task ValidateUserLogin_ShouldReturnNotNull_WhenResultIsNull()
+        public async Task ValidateUserLogin_ShouldReturnNull_WhenResultIsNull()
         {
             // Arrange
             var portaluser = fixture.Create<portaluser>();
@@ -83,123 +83,156 @@ namespace AutoPasTrainingTest.Controller
 
         //Test cases For AddPolicyNumber
         [Fact]
-        public async Task AddPolicyNumber_ShouldReturnValidData_WhenDataIsValid()
+        public async Task AddPolicyNumber_ShouldReturnOkResult_WhenDataIsValid()
         {
             // Arrange
-            int userid = fixture.Create<int>();
-            int policynumber = fixture.Create<int>();
-            string chasisNumber = fixture.Create<string>();
+            var userpolicyListDto = fixture.Create<UserPolicyListDTO>();
+            var res = fixture.Create<bool>();
 
-            var policy = fixture.Create<Policy>();
-            var policyvehicle = fixture.Create<Policyvehicle>();
-            var vehicle = fixture.Create<Vehicle>();
-            var userpolicy = fixture.Create<userpolicylist>();
+            _customerPortalInterface.Setup(t => t.AddPolicyNumber(userpolicyListDto)).ReturnsAsync(res);
 
-            _customerPortalInterface.Setup(t => t.validatePolicy(policynumber)).ReturnsAsync(policy);
-            _customerPortalInterface.Setup(t => t.GetPolicyVehicle(policynumber)).ReturnsAsync(policyvehicle);
-            _customerPortalInterface.Setup(t => t.validateChasis(policyvehicle.VehicleId, chasisNumber)).ReturnsAsync(vehicle);
-            _customerPortalInterface.Setup(t => t.AddPolicyNumber(userid, policynumber)).ReturnsAsync(userpolicy);
 
             // Act
-            var result = await _customerPortalController.AddPolicyNumber(userid, policynumber, chasisNumber);
+            var result = await _customerPortalController.AddPolicyNumber(userpolicyListDto);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeEquivalentTo(userpolicy);
+            result.Should().NotBeNull().And.BeAssignableTo<IActionResult>();
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(res);
 
-            _customerPortalInterface.Verify(t => t.validatePolicy(policynumber), Times.Once);
-            _customerPortalInterface.Verify(t => t.GetPolicyVehicle(policynumber), Times.Once);
-            _customerPortalInterface.Verify(t => t.validateChasis(policyvehicle.VehicleId, chasisNumber), Times.Once);
-            _customerPortalInterface.Verify(t => t.AddPolicyNumber(userid, policynumber), Times.Once);
+
+            _customerPortalInterface.Verify(t => t.AddPolicyNumber(userpolicyListDto), Times.Once());
+        }
+        [Fact]
+        public async Task AddPolicyNumber_ShouldReturnBadRequest_WhenExceptionIsThrown()
+        {
+            //Arrange
+            var userpolicyListDto = fixture.Create<UserPolicyListDTO>();
+
+            _customerPortalInterface.Setup(u => u.AddPolicyNumber(userpolicyListDto)).ThrowsAsync(new Exception("Exception Occured"));
+
+            // Act
+            var result = await _customerPortalController.AddPolicyNumber(userpolicyListDto);
+
+            // Assert
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>().Subject.Value.Should().Be("Exception Occured");
+            _customerPortalInterface.Verify(t => t.AddPolicyNumber(userpolicyListDto), Times.Once());
+        }
+
+        //Test Cases for ValidatePolicy
+        [Fact]
+        public async Task ValidatePolicyN_ShouldReturnsOkWithTrue_WhenValidPolicyNumber()
+        {
+            // Arrange
+            var policyNumber = fixture.Create<int>();
+            _customerPortalInterface.Setup(u => u.ValidatePolicy(policyNumber)).ReturnsAsync(true);
+
+            // Act
+            var result = await _customerPortalController.ValidatePolicy(policyNumber);
+
+            // Assert
+            result.Should().NotBeNull().And.BeAssignableTo<IActionResult>();
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(true);
+
+            _customerPortalInterface.Verify(t => t.ValidatePolicy(policyNumber), Times.Once());
         }
 
         [Fact]
-        public async Task AddPolicyNumber_ShouldReturnsNotFoundResult_WhenPolicyIsNull()
+        public async Task ValidatePolicy_ShouldReturnOkWithFalse_WhenInvalidPolicyNumber()
         {
             // Arrange
-            int userid = fixture.Create<int>();
-            int policynumber = fixture.Create<int>();
-            string chasisNumber = fixture.Create<string>();
-
-            _customerPortalInterface.Setup(t => t.validatePolicy(policynumber)).ReturnsAsync((Policy)null);
+            var policyNumber = fixture.Create<int>();
+            _customerPortalInterface.Setup(u => u.ValidatePolicy(policyNumber)).ReturnsAsync(false);
 
             // Act
-            var result = await _customerPortalController.AddPolicyNumber(userid, policynumber, chasisNumber);
+            var result = await _customerPortalController.ValidatePolicy(policyNumber);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>().Which.Value.Should().Be("Incorrect PolicyNumber");
+            result.Should().NotBeNull().And.BeAssignableTo<IActionResult>();
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(false);
 
-            _customerPortalInterface.Verify(t => t.validatePolicy(policynumber), Times.Once);
+            _customerPortalInterface.Verify(t => t.ValidatePolicy(policyNumber), Times.Once());
         }
 
         [Fact]
-        public async Task AddPolicyNumber_ShouldReturnsNotFoundResult_WhenPolicyVehicleIsNull()
+        public async Task ValidatePolicy_ShouldReturnsBadRequest_WhenExceptionIsThrown()
         {
             // Arrange
-            int userid = fixture.Create<int>();
-            int policynumber = fixture.Create<int>();
-            string chasisNumber = fixture.Create<string>();
-
-            var policy = fixture.Create<Policy>();
-
-            _customerPortalInterface.Setup(x => x.validatePolicy(policynumber)).ReturnsAsync(policy);
-            _customerPortalInterface.Setup(x => x.GetPolicyVehicle(policynumber)).ReturnsAsync((Policyvehicle)null);
+            var policyNumber = fixture.Create<int>();
+            _customerPortalInterface.Setup(u => u.ValidatePolicy(policyNumber)).ThrowsAsync(new Exception("Exception Occured when validating  Policy Number"));
 
             // Act
-            var result = await _customerPortalController.AddPolicyNumber(userid, policynumber, chasisNumber);
+            var result = await _customerPortalController.ValidatePolicy(policyNumber);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>().Which.Value.Should().Be("No Vehicle Found for entered PolicyNumber");
-
-            _customerPortalInterface.Verify(m => m.validatePolicy(policynumber), Times.Once);
-            _customerPortalInterface.Verify(m => m.GetPolicyVehicle(policynumber), Times.Once);
-            _customerPortalInterface.Verify(m => m.validateChasis(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-            _customerPortalInterface.Verify(m => m.AddPolicyNumber(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task AddPolicyNumber_ShouldReturnsNotFoundResult_WhenVehicleIsNull()
-        {
-            // Arrange
-            int userid = fixture.Create<int>();
-            int policynumber = fixture.Create<int>();
-            string chasisNumber = fixture.Create<string>();
-
-            var policy = fixture.Create<Policy>();
-            var policyvehicle = fixture.Create<Policyvehicle>();
-
-            _customerPortalInterface.Setup(x => x.validatePolicy(policynumber)).ReturnsAsync(policy);
-            _customerPortalInterface.Setup(x => x.GetPolicyVehicle(policynumber)).ReturnsAsync(policyvehicle);
-            _customerPortalInterface.Setup(x => x.validateChasis(policyvehicle.VehicleId, chasisNumber)).ReturnsAsync((Vehicle)null);
-
-            // Act
-            var result = await _customerPortalController.AddPolicyNumber(userid, policynumber, chasisNumber);
-
-            // Assert
-            result.Should().BeOfType<NotFoundObjectResult>().Which.Value.Should().Be("ChasisNumber not matched");
-
-            _customerPortalInterface.Verify(m => m.validatePolicy(policynumber), Times.Once);
-            _customerPortalInterface.Verify(m => m.GetPolicyVehicle(policynumber), Times.Once);
-            _customerPortalInterface.Verify(m => m.validateChasis(policyvehicle.VehicleId, chasisNumber), Times.Once);
-            _customerPortalInterface.Verify(m => m.AddPolicyNumber(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task AddPolicyNumber_ShouldReturnsBadRequestResult_WhenExceptionThrown()
-        {
-            // Arrange
-            int userid = fixture.Create<int>();
-            int policynumber = fixture.Create<int>();
-            string chasisNumber = fixture.Create<string>();
-
-            _customerPortalInterface.Setup(x => x.validatePolicy(policynumber)).ThrowsAsync(new Exception());
-
-            // Act
-            var result = await _customerPortalController.AddPolicyNumber(userid, policynumber, chasisNumber);
-
-            // Assert
+            result.Should().NotBeNull().And.BeAssignableTo<IActionResult>();
             result.Should().BeOfType<BadRequestObjectResult>()
-                  .Which.Value.Should().BeEquivalentTo("Exception Occured");
+                .Which.Value.Should().Be("Exception Occured when validating  Policy Number");
+
+            _customerPortalInterface.Verify(t => t.ValidatePolicy(policyNumber), Times.Once());
         }
+
+        //Test Cases for ValidateChasis
+
+        [Fact]
+        public async Task ValidateChasis_ShouldReturnsOkWithTrue_WhenValidChasisNumber()
+        {
+            // Arrange
+            var chasisNumber = fixture.Create<string>();
+
+            _customerPortalInterface.Setup(u => u.ValidateChasis(chasisNumber)).ReturnsAsync(true);
+
+            // Act
+            var result = await _customerPortalController.ValidateChasis(chasisNumber);
+
+            // Assert
+            result.Should().NotBeNull().And.BeAssignableTo<IActionResult>();
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(true);
+
+            _customerPortalInterface.Verify(t => t.ValidateChasis(chasisNumber), Times.Once());
+        }
+
+        [Fact]
+        public async Task ValidateChasis_ShouldReturnsOkWithFalse_WhenInvalidChasisNumber()
+        {
+            // Arrange
+            var chasisNumber = fixture.Create<string>();
+
+            _customerPortalInterface.Setup(u => u.ValidateChasis(chasisNumber)).ReturnsAsync(false);
+
+            // Act
+            var result = await _customerPortalController.ValidateChasis(chasisNumber);
+
+            // Assert
+            result.Should().NotBeNull().And.BeAssignableTo<IActionResult>();
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(false);
+
+            _customerPortalInterface.Verify(t => t.ValidateChasis(chasisNumber), Times.Once());
+        }
+
+        [Fact]
+        public async Task ValidateChasis_ShouldReturnsBadRequest_WhenExceptionIsThrown()
+        {
+            // Arrange
+            var chasisNumber = fixture.Create<string>();
+            _customerPortalInterface.Setup(u => u.ValidateChasis(chasisNumber)).ThrowsAsync(new Exception("Exception Occured when validating  Chasis Number"));
+
+            // Act
+            var result = await _customerPortalController.ValidateChasis(chasisNumber);
+
+            // Assert
+            result.Should().NotBeNull().And.BeAssignableTo<IActionResult>();
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Exception Occured when validating  Chasis Number");
+
+            _customerPortalInterface.Verify(t => t.ValidateChasis(chasisNumber), Times.Once());
+        }
+
 
         //Test Cases for GetUserPolicyNumber
         [Fact]
@@ -304,46 +337,36 @@ namespace AutoPasTrainingTest.Controller
 
 
         //Test cases for DeletePolicyNumber
+
         [Fact]
-        public async Task DeletePolicynumber_ShouldReturnsOkResult_WhenPolicyDeleted()
+        public async Task DeletePolicy_ShouldReturnsOkWithResult_WhenDeletedSuccessfully()
         {
             // Arrange
-            int policynumber = fixture.Create<int>();
+            var userPolicyListDto = fixture.Create<UserPolicyListDTO>();
+            var Result = fixture.Create<bool>();
 
-            _customerPortalInterface.Setup(x => x.DeletePolicy(policynumber)).ReturnsAsync("Deleted");
+            _customerPortalInterface.Setup(x => x.DeletePolicy(userPolicyListDto)).ReturnsAsync(Result);
 
             // Act
-            var result = await _customerPortalController.DeletePolicynumber(policynumber);
+            var result = await _customerPortalController.DeletePolicynumber(userPolicyListDto);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>().Which.Value.Should().Be("Deleted Successfully");
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            okResult.Value.Should().Be(Result);
+
+            _customerPortalInterface.Verify(t => t.DeletePolicy(userPolicyListDto), Times.Once());
         }
 
         [Fact]
-        public async Task DeletePolicynumber_ShouldReturnBadRequestResult_WhenPolicyNotFound()
+        public async Task DeletePolicy_ShouldReturnsBadRequestResult_WhenExceptionIsThrown()
         {
             // Arrange
-            int policynumber = fixture.Create<int>();
+            var userPolicyListDto = fixture.Create<UserPolicyListDTO>();
 
-            _customerPortalInterface.Setup(x => x.DeletePolicy(policynumber)).ReturnsAsync((string)null);
-
-            // Act
-            var result = await _customerPortalController.DeletePolicynumber(policynumber);
-
-            // Assert
-            result.Should().BeOfType<BadRequestObjectResult>().Which.Value.Should().Be("Failed");
-        }
-
-        [Fact]
-        public async Task DeletePolicynumber_ShouldReturnsBadRequestResult_WhenExceptionThrown()
-        {
-            // Arrange
-            int policynumber = fixture.Create<int>();
-
-            _customerPortalInterface.Setup(x => x.DeletePolicy(policynumber)).ThrowsAsync(new Exception());
+            _customerPortalInterface.Setup(u => u.DeletePolicy(userPolicyListDto)).ThrowsAsync(new Exception("Exception Occured While Deleting"));
 
             // Act
-            var result = await _customerPortalController.DeletePolicynumber(policynumber);
+            var result = await _customerPortalController.DeletePolicynumber(userPolicyListDto);
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>().Which.Value.Should().Be("Exception Occured While Deleting");

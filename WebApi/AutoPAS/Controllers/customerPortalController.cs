@@ -37,45 +37,65 @@ namespace AutoPAS.Controllers
             }
 
         }
-        /*[HttpGet("userid")]
-        public async Task<object> Get()
-        {
-            var result = await customerPortalInterface.get();
-            return result;
-        }*/
+        
         [HttpPost]
-        public async Task<IActionResult> AddPolicyNumber(int userid, int policynumber, string chasisNumber)
+        public async Task<IActionResult> AddPolicyNumber([FromBody]UserPolicyListDTO userPolicyListDTO)
         {
             try
             {
-                var policy = await customerPortalInterface.validatePolicy(policynumber);
-                if (policy != null)
-                {
-                    var policyvehicle = await customerPortalInterface.GetPolicyVehicle(policynumber);
-                    if (policyvehicle != null)
-                    {
-                        var vehicle = await customerPortalInterface.validateChasis(policyvehicle.VehicleId, chasisNumber);
-                        if (vehicle != null)
-                        {
-                            var userpolicy = await customerPortalInterface.AddPolicyNumber(userid, policynumber);
-                            if (userpolicy != null)
-                            {
-                                return Ok(userpolicy);
-                            }
+                var result = await customerPortalInterface.AddPolicyNumber(userPolicyListDTO);
+                return Ok(result);
 
-                        }
-                        return NotFound("ChasisNumber not matched");
-                    }
-                    return NotFound("No Vehicle Found for entered PolicyNumber");
-                }
-                return NotFound("Incorrect PolicyNumber");
             }
             catch
             {
                 return BadRequest("Exception Occured");
             }
+        }
+
+        [HttpGet("validatePolicy/{policynumber}")]
+        public async Task<IActionResult> ValidatePolicy([FromRoute] int policynumber)
+        {
+            try
+            {
+                var record = await customerPortalInterface.ValidatePolicy(policynumber);
+                if (record != true)
+                {
+                    return Ok(false);
+                }
+                return Ok(true);
+
+
+            }
+            catch
+            {
+                return BadRequest("Exception Occured when validating  Policy Number");
+            }
 
         }
+
+        [HttpGet("validateChasis/{chasisnumber}")]
+        public async Task<IActionResult> ValidateChasis([FromRoute] string chasisnumber)
+        {
+            try
+            {
+                var record = await customerPortalInterface.ValidateChasis(chasisnumber);
+                if (record != true)
+                {
+                    return Ok(false);
+                    
+                }
+                return Ok(true);
+
+
+            }
+            catch
+            {
+                return BadRequest("Exception Occured when validating  Chasis Number");
+            }
+
+        }
+
         [HttpGet]
         [Route("/user/{userid}")]
         public async Task<IActionResult> GetUserPolicyNumber([FromRoute]int userid)
@@ -113,21 +133,16 @@ namespace AutoPAS.Controllers
                 return BadRequest("Exception Occured");
             }
         }
-        [HttpDelete]
-        [Route("{policynumber:int}")]
-        public async Task<IActionResult> DeletePolicynumber([FromRoute] int policynumber)
+
+        [HttpDelete("/removepolicy")]
+        public async Task<IActionResult> DeletePolicynumber([FromBody] UserPolicyListDTO userPolicyListDto)
         {
             try
             {
-                string res = await customerPortalInterface.DeletePolicy(policynumber);
-                if (res != null)
-                {
-                    return Ok("Deleted Successfully");
-                }
-               
-                return BadRequest("Failed");
+                var result = await customerPortalInterface.DeletePolicy(userPolicyListDto);
+                return Ok(result);
             }
-            catch 
+            catch
             {
                 return BadRequest("Exception Occured While Deleting");
             }

@@ -14,27 +14,8 @@ policyData: any;
 vehicleData:any;
 currentPolicy:any;
 selectedPolicy:any;
-idv: any;
-policyNumber: any;
-vehicleType: any;
-rtoname: any;
-city: any;
-state:any;
-registrationNumber: any;
-dateOfPurchase: any;
-brand: any;
-modelname: any;
-variant: any;
-bodyType: any;
-fuelType: any;
-transmissionType: any;
-color:any;
-chasisNumber:any;
-engineNumber: any;
-cubicCapacity: any;
-seatingCapacity: any;
-yearOfManufacture: any;
-exShowroomPrice: any;
+userId:any;
+recordValidator:any;
 
 
 constructor(private policyService : PolicyService, private router : Router) {
@@ -42,15 +23,22 @@ constructor(private policyService : PolicyService, private router : Router) {
 }
 ngOnInit() {
 this.getPolicyDetails();
+this.userId=localStorage.getItem('userId');
 }
 
 getPolicyDetails(){
   this.policyService.getPolicyDetails().subscribe({
     next: (response) => {
       this.policyData = response;
+      if(response==null){
+        this.recordValidator=false;
+      }
+      else{
+        this.recordValidator=true;
+      }
     },
     error: () => {
-      alert("Invalid Login Credentials");
+     
     }
   });
 }
@@ -59,35 +47,15 @@ getVehicleDetails(event:any){
 this.selectedPolicy=event.target.value;
   this.policyService.getVehicleDetails(this.selectedPolicy).subscribe({
     next: (response) => {
-      this.vehicleData=response;
-this.idv = response.idv;
-this.policyNumber = response.policyNumber;
-this.vehicleType = response.vehicleType;
-this.rtoname = response.rtoname;
-this.city = response.city;
-this.state = response.state;
-this.registrationNumber = response.registrationNumber;
-this.dateOfPurchase = response.dateOfPurchase;
-this.brand = response.brand;
-this.modelname = response.modelname;
-this.variant = response.variant;
-this.bodyType = response.bodyType;
-this.fuelType = response.fuelType;
-this.transmissionType = response.transmissionType;
-this.color = response.color;
-this.chasisNumber = response.chasisNumber;
-this.engineNumber = response.engineNumber;
-this.cubicCapacity = response.cubicCapacity;
-this.seatingCapacity = response.seatingCapacity;
-this.yearOfManufacture = response.yearOfManufacture;
-this.exShowroomPrice = response.exShowroomPrice;
-
-      
-    
-      console.log(this.vehicleData)
+      if(response!=null){
+      this.vehicleData=response;    
+      }
+      else{
+        alert("Invalid data");
+      }
     },
     error: () => {
-      alert("");
+      alert("Error");
     }
   });
 }
@@ -100,9 +68,9 @@ openConfirmation() {
 }
 
 deletePolicy(){
-  this.policyService.removePolicyNumber(this.selectedPolicy).subscribe({
+  this.policyService.removePolicyNumber(this.userId,this.selectedPolicy).subscribe({
     next: (response) => {  
-      alert("Deleted Policy Number:"+this.selectedPolicy)
+      this.router.navigate(['home']);
     },
     error: () => {
       alert("Delete Failed");

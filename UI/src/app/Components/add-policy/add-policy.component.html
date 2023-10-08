@@ -1,6 +1,6 @@
 
 <app-nav-bar></app-nav-bar>
-<div class=" flex  ">
+<div class=" flex  bg-gray-900 h-screen">
  <div class="flex justify-end bg-gray-900 ml-15 w-3/4  py-16 h-full">
         <div class="flex py-10 w-full mx-10 flex-col">
             <div class="flex pb-7 md:pb-9 mt-7 md:-mt-1.5">
@@ -15,9 +15,13 @@
                       <label for="policyNumber" class="block text-gray-600 font-semibold text-sm leading-none mb-3 cursor-pointer">
                         Policy Number
                       </label>
-                      <input formControlName="policyNumber" id="policyNumber" type="text" placeholder="Enter Policy Number"
+                      <input formControlName="policyNumber" id="policyNumber" type="text"
                         class="py-2 px-4 md:px-5 w-full appearance-none border text-input text-xs lg:text-sm font-body placeholder-body min-h-12 transition duration-200 ease-in-out bg-white border-gray-300 focus:outline-none focus:border-heading h-11 md:h-12"
                         autoComplete="off" spellCheck="false" aria-invalid="false" />
+                        <div *ngIf="policyForm.controls['policyNumber'].invalid && (policyForm.controls['policyNumber'].dirty || policyForm.controls['policyNumber'].touched)"
+			  class="text-red-500 text-xs mt-2">
+			  Policy Number is required
+			</div>
                     </div>
                   </div>
               
@@ -25,13 +29,17 @@
                     <label for="chasisNumber" class="block text-gray-600 font-semibold text-sm leading-none mb-3 cursor-pointer">
                       Chasis Number
                     </label>
-                    <input formControlName="chasisNumber" id="chasisNumber" type="text" placeholder="Enter Chasis Number"
+                    <input formControlName="chasisNumber" id="chasisNumber" type="text"
                       class="py-2 px-4 md:px-5 w-full appearance-none transition duration-150 ease-in-out border text-input text-xs lg:text-sm font-body placeholder-body min-h-12 transition duration-200 ease-in-out bg-white border-gray-300 focus:outline-none focus:border-heading h-11 md:h-12"
                       autoComplete="off" spellCheck="false" aria-invalid="false" />
+                      <div *ngIf="policyForm.controls['chasisNumber'].invalid && (policyForm.controls['chasisNumber'].dirty || policyForm.controls['chasisNumber'].touched)"
+			  class="text-red-500 text-xs mt-2">
+			  Chasis Number is required
+			</div>
                   </div>
                   <div class="relative pt-2">
-                    <button type="button" (click)="addPolicy()"
-                      class="px-10 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800">Add</button>
+                    <button type="button" (click)="validatePolicy()"
+                      class="px-10 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"  [disabled]="policyForm.invalid">Add</button>
                   </div>
                 </div>
               </form>

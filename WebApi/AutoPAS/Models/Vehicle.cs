@@ -43,19 +43,19 @@ public partial class Vehicle
 
     public int? FuelTypeId { get; set; }
 
-    public virtual Bodytype? BodyType { get; set; }
+    public virtual Bodytype BodyType { get; set; }
 
-    public virtual Brand? Brand { get; set; }
+    public virtual Brand Brand { get; set; }
 
-    public virtual Fueltype? FuelType { get; set; }
+    public virtual Fueltype FuelType { get; set; }
 
-    public virtual Model? Model { get; set; }
+    public virtual Model Model { get; set; }
 
-    public virtual Rto? Rto { get; set; }
+    public virtual Rto Rto { get; set; }
 
-    public virtual Transmissiontype? TransmissionType { get; set; }
+    public virtual Transmissiontype TransmissionType { get; set; }
 
-    public virtual Variant? Variant { get; set; }
+    public virtual Variant Variant { get; set; }
 
-    public virtual Vehicletype? VehicleType { get; set; }
+    public virtual Vehicletype VehicleType { get; set; }
 }

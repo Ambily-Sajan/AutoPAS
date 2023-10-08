@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Angular\\WebApi\\AutoPAS\\AutoPAS.csproj": {}
+    "D:\\Git\\AutoPAS\\WebApi\\AutoPAS\\AutoPAS.csproj": {}
   },
   "projects": {
-    "D:\\Angular\\WebApi\\AutoPAS\\AutoPAS.csproj": {
+    "D:\\Git\\AutoPAS\\WebApi\\AutoPAS\\AutoPAS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Angular\\WebApi\\AutoPAS\\AutoPAS.csproj",
+        "projectUniqueName": "D:\\Git\\AutoPAS\\WebApi\\AutoPAS\\AutoPAS.csproj",
         "projectName": "AutoPAS",
-        "projectPath": "D:\\Angular\\WebApi\\AutoPAS\\AutoPAS.csproj",
+        "projectPath": "D:\\Git\\AutoPAS\\WebApi\\AutoPAS\\AutoPAS.csproj",
         "packagesPath": "C:\\Users\\ambily.sajan\\.nuget\\packages\\",
-        "outputPath": "D:\\Angular\\WebApi\\AutoPAS\\obj\\",
+        "outputPath": "D:\\Git\\AutoPAS\\WebApi\\AutoPAS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

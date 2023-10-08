@@ -31,10 +31,8 @@ export class LoginComponent {
       .subscribe({
         next: (response) => {
           if (response) {
-            localStorage.setItem('userId', response.userid)
+            localStorage.setItem('userId', response.userid.toString());
             localStorage.setItem('token', Math.random().toString());
-            console.log('token');
-            alert('Logged In!')
             this.router.navigate(['home']);
           } 
         },
