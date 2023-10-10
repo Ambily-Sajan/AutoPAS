@@ -2,6 +2,7 @@
 using AutoPAS.Models;
 using AutoPAS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace AutoPAS.Services
 {
@@ -46,7 +47,7 @@ namespace AutoPAS.Services
             return false;
         }
 
-        public async Task<Policyvehicle> GetPolicyVehicle(int policynumber)
+        public async Task<Policyvehicle?> GetPolicyVehicle(int policynumber)
         {
             var policy = await autoPasDbContext.Policies.FirstOrDefaultAsync(p => p.PolicyNumber == policynumber);
             var policyvehicle= await autoPasDbContext.Policyvehicles.FirstOrDefaultAsync(v => v.PolicyId == policy.PolicyId);
@@ -87,7 +88,7 @@ namespace AutoPAS.Services
             return policynumbers;
         }
 
-        public async Task<VehicleDetailsDTO> GetVehicleDetails(int policynumber)
+        public async Task<VehicleDetailsDTO?> GetVehicleDetails(int policynumber)
         {
             
          

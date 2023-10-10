@@ -16,6 +16,6 @@ namespace AutoPAS.Models
       
         [ForeignKey("userid")]
         [JsonIgnore]
-        public portaluser portaluser { get; set; }
+        public portaluser? portaluser { get; set; }
     }
 }

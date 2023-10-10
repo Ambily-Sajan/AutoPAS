@@ -5,9 +5,9 @@ namespace AutoPAS.Models;
 
 public partial class Vehicletype
 {
-    public int VehicleTypeId { get; set; }
+    public int? VehicleTypeId { get; set; }
 
-    public string? VehicleType1 { get; set; }
+    public string VehicleType1 { get; set; } = null!;
 
     public string? Description { get; set; }
 

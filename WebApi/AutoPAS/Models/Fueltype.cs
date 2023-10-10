@@ -7,7 +7,7 @@ public partial class Fueltype
 {
     public int FuelTypeId { get; set; }
 
-    public string FuelType1 { get; set; }
+    public string? FuelType1 { get; set; }
 
     public string? Description { get; set; }
 

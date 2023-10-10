@@ -12,9 +12,9 @@ namespace AutoPAS.Models
         [Key]
         public int userid { get; set; }
 
-        public string username { get; set; }
+        public string? username { get; set; }
 
-        public string password { get; set; }
+        public string? password { get; set; }
 
         [JsonIgnore]
         public ICollection<userpolicylist> userpolicylist { get; set; }

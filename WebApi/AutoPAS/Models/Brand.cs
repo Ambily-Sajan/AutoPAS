@@ -21,5 +21,5 @@ public partial class Brand
 
     public virtual Vehicletype? VehicleType { get; set; }
 
-    public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
+    public virtual ICollection<Vehicle?> Vehicles { get; set; } = new List<Vehicle?>();
 }
