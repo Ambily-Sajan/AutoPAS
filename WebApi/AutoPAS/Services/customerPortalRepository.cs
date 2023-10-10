@@ -17,7 +17,7 @@ namespace AutoPAS.Services
             this.autoPasDbContext = autoPasDbContext;
         }
 
-        public async Task<portaluser> validateUserLogin(portaluser portaluser)
+        public async Task<portaluser?> validateUserLogin(portaluser portaluser)
         {
             var result = await userDbContext.portaluser.FirstOrDefaultAsync(u => u.username == portaluser.username && u.password == portaluser.password);
             if (result != null)
